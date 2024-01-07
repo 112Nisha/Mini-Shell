@@ -1,0 +1,15 @@
+sleep 10
+activities
+sleep 10 
+sleep 10
+activities
+bg 19879
+fg 19879
+activities
+sleep 1000
+activities
+bg 19884
+activities
+fg 19884
+activities
+exit
