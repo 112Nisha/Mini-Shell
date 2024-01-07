@@ -1,32 +1,50 @@
-# Description
-- The prompt is colored in the same way an actual terminal is colored.
-- Errors are colored red
-- Multiple tabs and spaces are handled
-- files, folders and executables are colored too
-- No pastevents commands are stored in the file
+# Mini Shell
 
-# Assumptions
+This shell mirrors the functionalities of a standard bash shell. Here are its key features:
 
-Part A
+- Displays a prompt upon completion of a foreground process.
+- Supports `;` and `&` to separate commands. Treats `;` as a new-line character and `&` as an indicator for a background process.
+- Allows the usage of pipes and redirection arrows.
+- Performs commands similar to terminal actions:
+  - `warp`: akin to `cd`
+  - `peek`: akin to `ls`, supporting the same flags and input format.
+- Past Events:
+  Tracks up to 15 past commands. 
+  Functions (usage):
+    - `pastevents`: Displays past commands in order of recent use.
+    - `pastevents purge`: Clears all past command information.
+    - `pastevents execute <num>`: Executes the `<num>`-th last command.
+- Proclore Function:
+  Displays the following information on a process: PID, Process status, Process Group, Virtual memory, Executable path.
+- Seek Function:
+  Searches for a file/directory in a specified or current directory and returns relative paths of matching files/directories.
+  Flags:
+    - `-d`: Look for directories (ignore files even if the name matches).
+    - `-f`: Look for files (ignore directories even if the name matches).
+    - `-e`: Execute/change directory based on a single match.
+      - This flag is effective only when a single file or a single directory with the name is found.
+      - If only one file (and no directories) is found, then prints its output.
+      - If only one directory (and no files) is found, then changes the current working directory to it.
+      - Otherwise, the flag has no effect.
+      - Works in conjunction with `-d` and `-f` flags.
+      - If `-e` flag is enabled but the directory lacks access permission (execute) or the file lacks read permission, it outputs "Missing permissions for the task!".
+- Activities Function:
+  Lists processes spawned by the shell in lexicographic order.
+  Information includes Command Name, PID, and state (running or stopped).
+- Neonate Function:
+  Prints the PID of the most recently created process.
+  Continuously prints every `[time_arg]` seconds until the 'x' key is pressed.
+  Usage: `neonate` or `neonate -n <time_arg>`.
+- iMan Command:
+  Fetches the man page of a specified command.
+  Usage: `iMan <command_name>`.
 
-- bg process works only on non-user defined functions
-- For the same command, seek cannot open files sometimes.
-- Pastevents does not store full commands. It stores every smallest segment input that can be executed.
-- If we have one file and one folder, -e flag will not have it's condition satisfied
-- When Pastevents execute is performed on an "exit" command, it will execute whatever was executed the last.
-- If two commands are entered with ';', and one of them is wrong, the wrong one alone is not entered in the file.
-- For seek, if flags d and e are used simultanously, I am assuming that the user wants to go into a directory and not list all of the folders. Similarly if f and e are used, I am assuming that the user wants to print the contents of a file and not list all of the files.
-- For seek I am asuuming that parent directories cannot be accessed.
-- Not more than 1000 input words with 1000 characters each are input.
-- If there is an erroenous input given to a background process, it will not be executed at all.
+## Concepts and Ideas Utilized
 
-Part B
+- `fork`, `wait`
+- System calls
+- Networking with TCP
+- Raw and cooked mode
+- Knowledge of Linux
 
-- Assuming no () are used while giving inputs.
-- Token hierarchy : ";" > "&" > "|" > ">" = "<" = ">>". <!-- cause apparently it changes with context and (), and I am not using () or ''-->
-- Tokenising with " " sometimes, so if commands have " " in between them, it will not work.
-- While piping, for now, I am assuming that you do not enter &, although I am tokenizing with & and |, I am not separating the processes to ensure they work fine with that.
-- ls -l | grep in works and not for ls -l | grep "in"
-- spec 12: Assuming I need to show only the procs that are not exited for activities
-- Using ctrl + z or ctrl + c after a user defined function such as neonate gives undefined behaviour and I am assuming it is not necessary for me to handle those.
-- fg bg processes work only for processes spawned by my shell.
+**Note:** Ensure proper permissions for execution and file access to avoid errors.
